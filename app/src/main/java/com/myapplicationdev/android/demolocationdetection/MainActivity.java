@@ -1,6 +1,7 @@
 package com.myapplicationdev.android.demolocationdetection;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         btnGetLastLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
                 checkPermission();
                 Task<Location> task = client.getLastLocation();
                 task.addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkPermission();
-                FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+
                 client.removeLocationUpdates(mLocationCallback);
             }
         });
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkPermission() {
+    private void checkPermission(){
         int permissionCheck_Coarse = ContextCompat.checkSelfPermission(
                 MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
         int permissionCheck_Fine = ContextCompat.checkSelfPermission(
@@ -104,9 +104,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (permissionCheck_Coarse == PermissionChecker.PERMISSION_GRANTED
                 || permissionCheck_Fine == PermissionChecker.PERMISSION_GRANTED) {
-            return true;
+
         } else {
-            return false;
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+
         }
     }
 }
